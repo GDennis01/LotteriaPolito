@@ -24,11 +24,8 @@ const BetGame = ({ isLoggedIn }) => {
     const makeBet = async () => {
         console.log(selectedNumbers);
         try {
-            // make array of numbers in the form of {number1:value, number2:value, number3:value}
-            // if there are less than 3 numbers, fill the rest with null
             let bet = [];
             for (let i = 0; i < 3; i++) {
-                // bet[`number${i + 1}`] = selectedNumbers[i] || null;
                 bet[i] = selectedNumbers[i] || null;
             }
             if (isLoggedIn) await API.placeBet(bet);
@@ -45,8 +42,6 @@ const BetGame = ({ isLoggedIn }) => {
         setIsSubmitDisabled(selectedNumbers.length === 0);
     }, [selectedNumbers]);
     return (
-        // each number is selectable, you can select up to 3 numbers
-        // if you have at least 1 number selected, the submit button becomes enabled and you can submit your bet
         <div>
             <table>
                 <tbody>
