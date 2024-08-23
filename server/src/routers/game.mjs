@@ -51,31 +51,14 @@ class GameRoutes {
     );
 
     /**
-     * Records a new game
+     * Records a new bet or updates the existing one
      * @route POST /api/games
-     * @body {number} idUser - User ID
-     * @body {Array} rounds - Array of rounds
-     * @body {number} rounds.*.idMeme - Meme ID
-     * @body {number} rounds.*.idCaption - Caption ID
-     * @body {number} rounds.*.score - Score
+     * @body {numbers} - Array of numbers
      * @returns {Object} 200 - Game object
      */
     this.router.post(
       "/",
       this.authenticator.isLoggedIn,
-      // body("rounds").isArray().isLength({ gt: 0 }),
-      // body("rounds.*.idMeme").isInt(),
-      // body("rounds.*.idCaption").optional({ values: "null" }).isInt(),
-      // body("rounds.*.score").isInt(),
-      // this.errorHandler.validate,
-      // (req, res, next) => {
-      //   try {
-      //     const game = GameDao.recordGame(req.user.id, req.body.rounds);
-      //     res.status(201).json(game);
-      //   } catch (err) {
-      //     next(err);
-      //   }
-      // },
       body("numbers").isArray().isLength({ gt: 0, lt: 4 }),
       this.errorHandler.validate,
       (req, res, next) => {

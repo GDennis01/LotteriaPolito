@@ -54,14 +54,22 @@ class GameDAO {
     }));
   }
 
-  static getLatestGame() {
-    let sql = `
-      SELECT max(timestamp) as date from Game`;
+  /**
+   * Check if the user has already played the latest round
+   * @param {number} user_id - User ID
+   * @returns {string|null} Date of the latest game played by the user if it exists, null otherwise
+   */
+  static getLatestGame(user_id) {
+    // let sql = `SELECT max(timestamp) as date from Game`;
+    let sql = "SELECT MAX(timestamp) as date from game";
+    const date = db.prepare(sql).get().date;
+    sql = `SELECT * from user_game where timestamp = (SELECT max(timestamp) from user_game) and id = ?`;
 
-    const row = db.prepare(sql).get();
+    const row = db.prepare(sql).get(user_id);
 
     return {
-      game: row.date,
+      game: date,
+      hasPlayed: row != null,
     }
   }
 
@@ -72,17 +80,26 @@ class GameDAO {
    * @returns {number[]} Game ID of the newly recorded game
    */
   static recordGame(user_id, numbers) {
-    let latest_game = this.getLatestGame();
-    const insertGame = db.prepare(
-      "INSERT INTO user_game (timestamp, id,number1,number2,number3) VALUES (?, ?,?,?,?)",
-    );
+    let game = this.getLatestGame(user_id);
+    let hasPlayed = game.hasPlayed;
+    let date = game.date;
 
-    let idGame;
-    db.transaction(() => {
-      insertGame.run(latest_game, user_id, numbers[0], numbers[1], numbers[2]);
-    })();
+    let sql = "INSERT INTO user_game (timestamp, id,number1,number2,number3) VALUES (?, ?,?,?,?)";
+    let params = [date, user_id, numbers[0], numbers[1], numbers[2]];
+    if (hasPlayed) {
+      sql = "UPDATE user_game SET number1 = ?, number2 = ?, number3 = ? WHERE timestamp = ? and id = ?";
+      params = [numbers[0], numbers[1], numbers[2], date, user_id];
+    } else {
+      sql = "INSERT INTO user_game (timestamp, id,number1,number2,number3) VALUES (?, ?,?,?,?)";
+    }
+    try {
 
-    return idGame;
+      db.prepare(sql).run(params);
+    } catch (e) {
+      console.log(e);
+    }
+
+    return date;
   }
 }
 
