@@ -2,6 +2,7 @@ import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import initRoutes from "./src/routes.mjs";
+import { GameLoop } from "./src/services/game.mjs";
 
 const app = new express();
 
@@ -19,4 +20,8 @@ initRoutes(app);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
+  GameLoop();
+  setInterval(() => {
+    GameLoop();
+  }, 120000);
 });
