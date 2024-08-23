@@ -26,16 +26,17 @@ const BetGame = ({ isLoggedIn }) => {
         try {
             // make array of numbers in the form of {number1:value, number2:value, number3:value}
             // if there are less than 3 numbers, fill the rest with null
-            let bet = {};
+            let bet = [];
             for (let i = 0; i < 3; i++) {
-                bet[`number${i + 1}`] = selectedNumbers[i] || null;
+                // bet[`number${i + 1}`] = selectedNumbers[i] || null;
+                bet[i] = selectedNumbers[i] || null;
             }
             if (isLoggedIn) await API.placeBet(bet);
 
             navigate("/");
-            setMemes([]);
         } catch (error) {
-            setError(error);
+            // setError(error);
+            console.log(error);
         }
     }
     useEffect(() => {
@@ -65,7 +66,7 @@ const BetGame = ({ isLoggedIn }) => {
                     ))}
                 </tbody>
             </table>
-            <Button disabled={isSubmitDisabled}>Place your bet!</Button>
+            <Button disabled={isSubmitDisabled} onClick={makeBet}>Place your bet!</Button>
         </div>
     );
 }
