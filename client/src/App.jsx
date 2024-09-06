@@ -9,9 +9,6 @@ import useMessageContext from "./components/contexts/message/useMessageContext.m
 import ErrorPage from "./components/errors/Error404Page";
 import ErrorBoundary from "./components/errors/ErrorBoundary";
 import ProtectedRoute from "./components/errors/ProtectedRoute";
-import Game from "./components/game/Game";
-import PlayButton from "./components/game/PlayButton";
-import Profile from "./components/user/Profile";
 import LoginForm from "./components/auth/LoginForm.jsx";
 import Rules from "./components/Rules.jsx";
 import Ranking from "./components/Ranking.jsx";
@@ -80,9 +77,10 @@ const App = () => {
   const fetchUserInfo = async () => {
     try {
       const user = await API.getUserInfo();
-
+      console.log(user);
       setLoggedIn(true);
       setUser(user);
+      console.log("go")
     } catch (error) {
       if (isLoggedIn) setError(error);
 
@@ -106,26 +104,12 @@ const App = () => {
           />
           <Ranking />
           <Routes>
-            {/* <Route index element={<PlayButton setMemes={setMemes} />}></Route> */}
             <Route index element={<LoginForm handleLogin={handleLogin} />}></Route>
-            {/* <Route
-              path="play"
-              element={<Game memes={memes} setMemes={setMemes} />}
-            ></Route> */}
-
             <Route
               path="play"
               element={<ProtectedRoute>
                 <BetGame isLoggedIn={isLoggedIn} />
               </ProtectedRoute>
-              }
-            ></Route>
-            <Route
-              path="profile"
-              element={
-                <ProtectedRoute>
-                  <Profile user={user} />
-                </ProtectedRoute>
               }
             ></Route>
             <Route path="*" element={<ErrorPage />}></Route>
