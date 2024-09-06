@@ -132,6 +132,21 @@ async function getLatestDrawnNumbers() {
   handleErrors(await response.json());
 }
 
+
+async function getLeaderboard() {
+  const response = await fetch(`${SERVER_URL}/games/leaderboard`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (response.ok) return response.json();
+
+  handleErrors(await response.json());
+}
+
 /** ---------------------------- Meme APIs ---------------------------------- */
 
 
@@ -146,6 +161,7 @@ const API = {
   placeBet,
   getGames,
   getLatestDrawnNumbers,
+  getLeaderboard,
 };
 
 export default API;
