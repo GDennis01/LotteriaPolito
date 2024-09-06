@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -7,7 +7,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 /**
  * A form for logging in. handles only the data, not the API call.
  */
-const LoginForm = ({ handleLogin }) => {
+const LoginForm = ({ handleLogin, isLoggedIn, navigate }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -15,6 +15,11 @@ const LoginForm = ({ handleLogin }) => {
     e.preventDefault();
     handleLogin(email, password);
   };
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/play");
+    }
+  });
 
   return (
     <Form className="ml-auto" onSubmit={handleSubmit}>

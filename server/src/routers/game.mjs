@@ -70,6 +70,25 @@ class GameRoutes {
         }
       },
     );
+
+
+    /**
+     * Get the latest drawn numbers
+     * @route GET /api/games/latest
+     */
+    this.router.get(
+      "/latest",
+      this.authenticator.isLoggedIn,
+      (req, res, next) => {
+        try {
+          const drawnNumbers = GameDao.getLatestCompletedGame().numbers;
+          res.json(drawnNumbers);
+        } catch (err) {
+          next(err);
+        }
+      },
+    );
+
   }
 }
 

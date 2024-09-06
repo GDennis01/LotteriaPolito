@@ -14,12 +14,21 @@ class GameDAO {
    * - {number[]} numbers - Array of numbers drawn
    */
   static getLatestGame() {
-    let sql = "SELECT * from Game where timestamp = (SELECT max(timestamp) from Game)";
+    let sql = "SELECT * from Game order by timestamp desc limit 1";
     const row = db.prepare(sql).get();
     return {
       timestamp: row.timestamp,
       numbers: [row.number1, row.number2, row.number3, row.number4, row.number5]
     }
+  }
+  static getLatestCompletedGame() {
+    let sql = "SELECT * from Game where completed=1  order by timestamp desc limit 1";
+    const row = db.prepare(sql).get();
+    return {
+      timestamp: row.timestamp,
+      numbers: [row.number1, row.number2, row.number3, row.number4, row.number5]
+    }
+
   }
 
   /**

@@ -104,7 +104,7 @@ const App = () => {
           />
           <Ranking />
           <Routes>
-            <Route index element={<LoginForm handleLogin={handleLogin} />}></Route>
+            <Route index element={<LoginForm handleLogin={handleLogin} isLoggedIn={isLoggedIn} navigate={navigate} />}></Route>
             <Route
               path="play"
               element={<ProtectedRoute>

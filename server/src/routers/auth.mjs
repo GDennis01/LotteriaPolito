@@ -58,6 +58,7 @@ class AuthRoutes {
     );
   }
 
+
   /**
    * Middleware to fetch the latest score of the user (it
    * might have changed since the last time the user logged in)

@@ -118,51 +118,25 @@ async function getGames({ limit, offset }) {
   handleErrors(await response.json());
 }
 
+async function getLatestDrawnNumbers() {
+  const response = await fetch(`${SERVER_URL}/games/latest`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (response.ok) return response.json();
+
+  handleErrors(await response.json());
+}
+
 /** ---------------------------- Meme APIs ---------------------------------- */
 
-async function getRandomMemes(count) {
-  const response = await fetch(`${SERVER_URL}/memes/random?count=${count}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-    },
-  });
 
-  if (response.ok) return response.json();
 
-  handleErrors(await response.json());
-}
 
-/** -------------------------- Caption APIs --------------------------------- */
-
-async function getRandomCaptionsForMeme(idMeme) {
-  const response = await fetch(
-    `${SERVER_URL}/captions/random?idMeme=${idMeme}`,
-    {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    },
-  );
-
-  if (response.ok) return response.json();
-
-  handleErrors(await response.json());
-}
-
-async function validateCaption(id, idMeme) {
-  const response = await fetch(`${SERVER_URL}/captions/${id}/${idMeme}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-    },
-  });
-
-  if (response.ok) return response.json();
-
-  handleErrors(await response.json());
-}
 
 const API = {
   login,
@@ -171,9 +145,7 @@ const API = {
   recordGame,
   placeBet,
   getGames,
-  getRandomMemes,
-  getRandomCaptionsForMeme,
-  validateCaption,
+  getLatestDrawnNumbers,
 };
 
 export default API;

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api/API.mjs";
+import DrawnNumbers from "../DrawnNumber";
 const BetGame = ({ isLoggedIn }) => {
 
     let numbers = Array(9).fill(null).map(() => Array(10).fill(null));
@@ -48,6 +49,7 @@ const BetGame = ({ isLoggedIn }) => {
     }, [selectedNumbers]);
     return (
         <div>
+            <DrawnNumbers />
             <table>
                 <tbody>
                     {numbers.map((row, i) => (
