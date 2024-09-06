@@ -149,6 +149,11 @@ class GameDAO {
     return rows;
   }
 
+  static markGameAsCompleted(date) {
+    let sql = "UPDATE Game SET completed = 1 WHERE timestamp = ?";
+    db.prepare(sql).run(date);
+  }
+
 }
 
 

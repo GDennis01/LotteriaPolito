@@ -104,11 +104,11 @@ const App = () => {
           />
           <Ranking />
           <Routes>
-            <Route index element={<LoginForm handleLogin={handleLogin} isLoggedIn={isLoggedIn} navigate={navigate} />}></Route>
+            <Route index element={<LoginForm handleLogin={handleLogin} navigate={navigate} />}></Route>
             <Route
               path="play"
               element={<ProtectedRoute>
-                <BetGame isLoggedIn={isLoggedIn} />
+                <BetGame />
               </ProtectedRoute>
               }
             ></Route>

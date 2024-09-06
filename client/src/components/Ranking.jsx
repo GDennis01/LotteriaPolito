@@ -2,14 +2,18 @@ import { useEffect, useState } from "react";
 import API from "../api/API.mjs";
 
 const Ranking = () => {
-    const [users, setUsers] = useState([]);
+    let _users = [{ name: "Loading...", points: "Loading..." }, { name: "Loading...", points: "Loading..." }, { name: "Loading...", points: "Loading..." }];
+    const [users, setUsers] = useState(_users);
     useEffect(() => {
         const fetchData = async () => {
             let _users = await API.getLeaderboard();
             setUsers(_users);
-            console.log(users);
+        };
+        const checkForUpdates = async () => {
+            setInterval(fetchData, 10000);
         };
         fetchData();
+        checkForUpdates();
     }, []);
     return (
         <>

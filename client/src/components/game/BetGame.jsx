@@ -1,11 +1,12 @@
 import { Button } from "react-bootstrap";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api/API.mjs";
 import DrawnNumbers from "../DrawnNumber";
-const BetGame = ({ isLoggedIn }) => {
-
+import LoggedInContext from "../contexts/LoggedInContext";
+const BetGame = () => {
+    const isLoggedIn = useContext(LoggedInContext);
     let numbers = Array(9).fill(null).map(() => Array(10).fill(null));
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 10; j++) {

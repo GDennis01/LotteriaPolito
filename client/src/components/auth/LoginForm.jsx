@@ -1,15 +1,17 @@
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
+import LoggedInContext from "../contexts/LoggedInContext";
 
 /**
  * A form for logging in. handles only the data, not the API call.
  */
-const LoginForm = ({ handleLogin, isLoggedIn, navigate }) => {
+const LoginForm = ({ handleLogin, navigate }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const isLoggedIn = useContext(LoggedInContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();

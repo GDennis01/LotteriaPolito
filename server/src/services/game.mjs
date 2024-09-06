@@ -1,11 +1,11 @@
 import GameDAO from "../dao/game.mjs";
 async function GameLoop() {
     console.log("--------------------");
-    // CreateGame(DrawNumbers());
+    CreateGame(DrawNumbers());
     // await sleep(120000);
     // wait 1m
     await sleep(60000);
-    // CheckWinners();
+    CheckWinners();
     console.log("--------------------");
 }
 function sleep(ms) {
@@ -31,6 +31,7 @@ function CheckWinners() {
         console.log("Calling GameDAO to update the points with params: ", game_user.id, game.timestamp, hits, game_user.numbers);
         GameDAO.updatePoints(game_user.id, game.timestamp, hits, game_user.numbers);
     }
+    GameDAO.markGameAsCompleted(game.timestamp);
 
 
 }
