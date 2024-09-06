@@ -24,13 +24,18 @@ const BetGame = ({ isLoggedIn }) => {
     const makeBet = async () => {
         console.log(selectedNumbers);
         try {
+            // navigate("/");
+            if (!isLoggedIn) {
+                console.log("User is not logged in");
+                navigate("/");
+                return;
+            }
             let bet = [];
             for (let i = 0; i < 3; i++) {
                 bet[i] = selectedNumbers[i] || null;
             }
             if (isLoggedIn) await API.placeBet(bet);
 
-            navigate("/");
         } catch (error) {
             // setError(error);
             console.log(error);

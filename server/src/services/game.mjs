@@ -1,11 +1,16 @@
 import GameDAO from "../dao/game.mjs";
-function GameLoop() {
+async function GameLoop() {
     console.log("--------------------");
-    CheckWinners();
-    CreateGame(DrawNumbers());
+    // CreateGame(DrawNumbers());
+    // await sleep(120000);
+    // wait 1m
+    await sleep(60000);
+    // CheckWinners();
     console.log("--------------------");
 }
-
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 function CheckWinners() {
     let game = GameDAO.getLatestGame();
@@ -23,10 +28,16 @@ function CheckWinners() {
         if (hits > 0) {
             console.log(`User ${game_user.id} has ${hits} hits!`);
         }
+        console.log("Calling GameDAO to update the points with params: ", game_user.id, game.timestamp, hits, game_user.numbers);
+        GameDAO.updatePoints(game_user.id, game.timestamp, hits, game_user.numbers);
     }
 
 
 }
+/**
+ * Draw 5 unique numbers between 1 and 90
+ * @returns {number[]} Array of drawn numbers
+ */
 function DrawNumbers() {
     // draw 5 unique numbers between 1 and 90
     let min_number = 1;
@@ -41,6 +52,10 @@ function DrawNumbers() {
     console.log("Drawn numbers: ", drawnNumbers);
     return drawnNumbers;
 }
+/**
+ * Create a new game with the specified numbers
+ * @param {number[]} numbers 
+ */
 function CreateGame(numbers) {
     GameDAO.createGame(numbers);
 }

@@ -18,10 +18,9 @@ app.use(cors(corsOptions));
 
 initRoutes(app);
 
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`Server listening at http://localhost:${port}`);
-  GameLoop();
-  setInterval(() => {
-    GameLoop();
-  }, 120000);
+  while (true) {
+    await GameLoop();
+  }
 });

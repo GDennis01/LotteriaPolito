@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import JSON from "json5";
 import db from "../db/db.mjs";
 
+const POINTS_PER_NUMBER = 5;
 /**
  * Data access object for the Game table.
  */
@@ -9,6 +10,8 @@ class GameDAO {
   /**
    * Fetch the latest game recorded by the server
    * @returns {Object} Latest game object with timestamp and numbers drawn
+   * - {string} timestamp - Date of the game
+   * - {number[]} numbers - Array of numbers drawn
    */
   static getLatestGame() {
     let sql = "SELECT * from Game where timestamp = (SELECT max(timestamp) from Game)";
@@ -23,6 +26,9 @@ class GameDAO {
    * Fetch all games played by users in a specific date
    * @param {string} date - Date of the game
    * @returns {Array.<Object>} Array of games played by users
+   * - {number} id - User ID
+   * - {string} timestamp - Date of the game
+   * - {number[]} numbers - Array of numbers betted
    * with the timestamp and numbers betted
   */
   static getGamesByDate(date) {
@@ -42,12 +48,15 @@ class GameDAO {
    */
   static getLatestGameByUser(user_id) {
     // let sql = `SELECT max(timestamp) as date from Game`;
+    console.log("--------------------");
     let sql = "SELECT MAX(timestamp) as date from game";
     const date = db.prepare(sql).get().date;
-    sql = `SELECT * from user_game where timestamp = (SELECT max(timestamp) from user_game) and id = ?`;
+    console.log("Row: ", date);
+    sql = `SELECT * from user_game where timestamp = ? and id = ?`;
 
-    const row = db.prepare(sql).get(user_id);
-
+    const row = db.prepare(sql).get(date, user_id);
+    console.log("Row: ", row);
+    console.log("--------------------");
     return {
       game: date,
       hasPlayed: row != null,
@@ -73,18 +82,18 @@ class GameDAO {
     } else {
       sql = "INSERT INTO user_game (timestamp, id,number1,number2,number3) VALUES (?, ?,?,?,?)";
     }
-    let update_points = "UPDATE user SET points = points + ? WHERE id = ?";
-    let betted_numbers = numbers.reduce((acc, num) => {
-      if (num != null) {
-        return acc + 1;
-      }
-    }, 0);
-    let betted_points = betted_numbers * 5;
+    // let update_points = "UPDATE user SET points = points + ? WHERE id = ?";
+    // let betted_numbers = numbers.reduce((acc, num) => {
+    //   if (num != null) {
+    //     return acc + 1;
+    //   }
+    // }, 0);
+    // let betted_points = betted_numbers * 5;
     try {
       db.transaction(() => {
         db.prepare(sql).run(params);
-        if (!hasPlayed)
-          db.prepare(update_points).run(0 - parseInt(betted_points), user_id);
+        // if (!hasPlayed)
+        //   db.prepare(update_points).run(0 - parseInt(betted_points), user_id);
       })();
     } catch (e) {
       console.log(e);
@@ -98,10 +107,31 @@ class GameDAO {
    * @param {number[]} numbers - Array of numbers drawn
    */
   static createGame(numbers) {
+    console.log("--------------------");
+    console.log("CREATING GAME WITH NUMBERS: ", numbers);
     let sql = "INSERT INTO Game(timestamp,number1,number2,number3,number4,number5) VALUES (?,?,?,?,?,?)";
     let date = dayjs().format("YYYY-MM-DD HH:mm");
     let params = [date, numbers[0], numbers[1], numbers[2], numbers[3], numbers[4]];
     db.prepare(sql).run(params);
+  }
+
+  static updatePoints(user_id, date, hits, numbers) {
+    let betted_numbers = numbers.filter((num) => num != null);
+    console.log("Betted numbers: ", betted_numbers);
+    betted_numbers = betted_numbers.length;
+    // count the number of numbers betted
+    let betted_points = betted_numbers * POINTS_PER_NUMBER;
+    let points = (2 * (POINTS_PER_NUMBER * betted_numbers) * (hits) / (betted_numbers)) - betted_points;
+    console.log("--------------------");
+    console.log("UPDATING POINTS FOR USER: ", user_id, " WITH ", points, " POINTS");
+    db.transaction(() => {
+      let sql = "UPDATE user SET points = points + ? WHERE id = ?";
+      db.prepare(sql).run(points, user_id);
+      let sql2 = "UPDATE user_game SET win = ? where id = ? and timestamp = ?";
+      db.prepare(sql2).run((points > 0 ? 1 : 0), user_id, date);
+    })();
+    console.log("--------------------");
+
   }
 }
 
