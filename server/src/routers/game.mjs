@@ -96,7 +96,7 @@ class GameRoutes {
      */
     this.router.get(
       "/leaderboard",
-      // this.authenticator.isLoggedIn,
+      this.authenticator.isLoggedIn,
       (req, res, next) => {
         try {
           const leaderboard = GameDao.getLeaderboard();

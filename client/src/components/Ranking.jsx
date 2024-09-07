@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import API from "../api/API.mjs";
+import { Button } from "react-bootstrap";
 
-const Ranking = () => {
+const Ranking = ({ navigate }) => {
     let _users = [{ name: "Loading...", points: "Loading..." }, { name: "Loading...", points: "Loading..." }, { name: "Loading...", points: "Loading..." }];
     const [users, setUsers] = useState(_users);
     useEffect(() => {
@@ -17,6 +18,7 @@ const Ranking = () => {
     }, []);
     return (
         <>
+            <h1>Ranking</h1>
             <table>
                 <thead>
                     <tr>
@@ -44,6 +46,7 @@ const Ranking = () => {
                     </tr>
                 </tbody>
             </table>
+            <Button onClick={() => navigate("/play")}>Back</Button>
         </>
     )
 }

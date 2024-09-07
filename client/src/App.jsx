@@ -102,13 +102,15 @@ const App = () => {
             fetchUserInfo={fetchUserInfo}
           />
           <PointsContext.Provider value={points}>
-            <Ranking />
             <Routes>
               <Route index element={<LoginForm handleLogin={handleLogin} navigate={navigate} />}></Route>
+              <Route path="ranking" element={<ProtectedRoute>
+                <Ranking navigate={navigate} />
+              </ProtectedRoute>}></Route>
               <Route
                 path="play"
                 element={<ProtectedRoute>
-                  <BetGame fetchUserInfo={fetchUserInfo} setPoints={setPoints} />
+                  <BetGame fetchUserInfo={fetchUserInfo} setPoints={setPoints} navigate={navigate} />
                 </ProtectedRoute>
                 }
               ></Route>
