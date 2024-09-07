@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import API from "../api/API.mjs";
+import PointsContext from "./contexts/PointsContext";
 
-const DrawnNumbers = () => {
+const DrawnNumbers = ({ setPoints }) => {
     let [numbers, setNumbers] = useState([]);
+    let points = useContext(PointsContext);
     useEffect(() => {
         const fetchData = async () => {
             let _numbers = await API.getLatestDrawnNumbers();
+            let _points = await API.getTotalScore();
             setNumbers(_numbers);
+            setPoints(_points);
             console.log(numbers);
+            console.log(points);
         };
         const checkForUpdates = async () => {
             setInterval(fetchData, 10000);

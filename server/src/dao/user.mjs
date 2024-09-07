@@ -28,8 +28,7 @@ class UserDAO {
    * @returns {number} Total score
    */
   static getTotalScore(email) {
-    return db.prepare("SELECT points FROM user WHERE email = ?").get(email)
-      .totalScore;
+    return db.prepare("SELECT points FROM user WHERE email = ?").get(email).points;
   }
 }
 

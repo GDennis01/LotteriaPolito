@@ -93,7 +93,11 @@ class Authenticator {
     if (req.isAuthenticated()) return next();
     return res.status(401).json({ error: "Unauthorized" });
   }
-
+  getTotalScore(req, res) {
+    if (!req.isAuthenticated())
+      return res.status(401).json({ error: "Unauthorized" });
+    UserDao.getTotalScore(req.user.email);
+  }
 }
 
 export default Authenticator;

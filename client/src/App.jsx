@@ -13,6 +13,7 @@ import LoginForm from "./components/auth/LoginForm.jsx";
 import Rules from "./components/Rules.jsx";
 import Ranking from "./components/Ranking.jsx";
 import BetGame from "./components/game/BetGame.jsx";
+import PointsContext from "./components/contexts/PointsContext.jsx";
 
 /**
  * Main component of the application that manages the routing and the state of the user.
@@ -25,8 +26,7 @@ const App = () => {
 
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-
-  const [memes, setMemes] = useState([]);
+  const [points, setPoints] = useState(null);
 
   /**
    * Fetch the user info when the app is mounted.
@@ -79,6 +79,7 @@ const App = () => {
       const user = await API.getUserInfo();
       setLoggedIn(true);
       setUser(user);
+      setPoints(user.points);
     } catch (error) {
       if (isLoggedIn) setError(error);
 
@@ -100,19 +101,21 @@ const App = () => {
             handleLogout={handleLogout}
             fetchUserInfo={fetchUserInfo}
           />
-          <Ranking />
-          <Routes>
-            <Route index element={<LoginForm handleLogin={handleLogin} navigate={navigate} />}></Route>
-            <Route
-              path="play"
-              element={<ProtectedRoute>
-                <BetGame fetchUserInfo={fetchUserInfo} />
-              </ProtectedRoute>
-              }
-            ></Route>
-            <Route path="*" element={<ErrorPage />}></Route>
-          </Routes>
-          <Rules />
+          <PointsContext.Provider value={points}>
+            <Ranking />
+            <Routes>
+              <Route index element={<LoginForm handleLogin={handleLogin} navigate={navigate} />}></Route>
+              <Route
+                path="play"
+                element={<ProtectedRoute>
+                  <BetGame fetchUserInfo={fetchUserInfo} setPoints={setPoints} />
+                </ProtectedRoute>
+                }
+              ></Route>
+              <Route path="*" element={<ErrorPage />}></Route>
+            </Routes>
+            <Rules />
+          </PointsContext.Provider>
         </LoggedInContext.Provider>
       </MessageContext.Provider>
     </ErrorBoundary >

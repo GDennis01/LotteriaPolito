@@ -66,8 +66,10 @@ class AuthRoutes {
       "/current/score",
       this.authenticator.isLoggedIn,
       (req, res) => {
-        console.log(req.user);
-        res.json(req.user.points);
+        {
+          const totalScore = UserDAO.getTotalScore(req.user.email);
+          return res.json(totalScore);
+        };
       },
     );
   }

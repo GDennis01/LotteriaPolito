@@ -5,11 +5,12 @@ import { useNavigate } from "react-router-dom";
 import API from "../../api/API.mjs";
 import DrawnNumbers from "../DrawnNumber";
 import LoggedInContext from "../contexts/LoggedInContext";
-const BetGame = () => {
+import PointsContext from "../contexts/PointsContext";
+const BetGame = ({ setPoints }) => {
     const isLoggedIn = useContext(LoggedInContext);
     const [selectedNumbers, setSelectedNumbers] = useState([]);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-    const [userInfo, setUserInfo] = useState(null);
+    const points = useContext(PointsContext);
 
     let numbers = Array(9).fill(null).map(() => Array(10).fill(null));
     for (let i = 0; i < 9; i++) {
@@ -51,22 +52,22 @@ const BetGame = () => {
         setIsSubmitDisabled(selectedNumbers.length === 0);
     }, [selectedNumbers]);
     useEffect(() => {
-        const fetchUserInfo = async () => {
+        const fetchUserPoints = async () => {
             try {
                 const points = await API.getTotalScore();
 
                 console.log(points);
-                setUserInfo(points);
+                setPoints(points);
                 console.log(points);
             } catch (error) {
                 console.log(error);
             }
         };
-        fetchUserInfo();
+        fetchUserPoints();
     }, []);
     return (
         <div>
-            <DrawnNumbers />
+            <DrawnNumbers setPoints={setPoints} />
             <table>
                 <tbody>
                     {numbers.map((row, i) => (
@@ -88,7 +89,7 @@ const BetGame = () => {
             </table>
             <Button disabled={isSubmitDisabled} onClick={makeBet}>Place your bet!</Button>
             <div>
-                Your points: {userInfo ? userInfo : "loading..."}
+                Your points: {points ? points : "loading..."}
             </div>
         </div>
     );

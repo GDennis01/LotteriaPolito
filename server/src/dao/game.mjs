@@ -143,7 +143,7 @@ class GameDAO {
 
   }
 
-  static getLeaderboard() {
+  static getLeaderboard(user) {
     let sql = "SELECT name, points from user order by points desc";
     const rows = db.prepare(sql).all();
     return rows;

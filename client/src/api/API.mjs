@@ -133,6 +133,8 @@ async function getLatestDrawnNumbers() {
 }
 
 
+
+
 async function getLeaderboard() {
   const response = await fetch(`${SERVER_URL}/games/leaderboard`, {
     method: "GET",
