@@ -77,10 +77,8 @@ const App = () => {
   const fetchUserInfo = async () => {
     try {
       const user = await API.getUserInfo();
-      console.log(user);
       setLoggedIn(true);
       setUser(user);
-      console.log("go")
     } catch (error) {
       if (isLoggedIn) setError(error);
 
@@ -108,7 +106,7 @@ const App = () => {
             <Route
               path="play"
               element={<ProtectedRoute>
-                <BetGame />
+                <BetGame fetchUserInfo={fetchUserInfo} />
               </ProtectedRoute>
               }
             ></Route>

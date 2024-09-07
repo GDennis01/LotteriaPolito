@@ -56,25 +56,23 @@ class AuthRoutes {
       this.authenticator.isLoggedIn,
       (req, res) => res.json(req.user),
     );
+
+    /**
+     * Fetches the total score of the user
+     * @route GET /api/sessions/current/score
+     * @returns {Object} 200 - User object with total score
+     */
+    this.router.get(
+      "/current/score",
+      this.authenticator.isLoggedIn,
+      (req, res) => {
+        console.log(req.user);
+        res.json(req.user.points);
+      },
+    );
   }
 
 
-  /**
-   * Middleware to fetch the latest score of the user (it
-   * might have changed since the last time the user logged in)
-   * @param {express.Request} req - Express request
-   * @param {express.Response} res - Express response
-   * @param {Function} next - The next function
-   */
-  updateUserTotalScore(req, res, next) {
-    try {
-      const totalScore = UserDAO.getTotalScore(req.user.id);
-      req.user.totalScore = totalScore;
-      next();
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch latest score" });
-    }
-  }
 }
 
 export default AuthRoutes;

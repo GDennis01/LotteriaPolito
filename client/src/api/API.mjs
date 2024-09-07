@@ -147,7 +147,20 @@ async function getLeaderboard() {
   handleErrors(await response.json());
 }
 
-/** ---------------------------- Meme APIs ---------------------------------- */
+async function getTotalScore() {
+  const response = await fetch(`${SERVER_URL}/sessions/current/score`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (response.ok) return response.json();
+
+  handleErrors(await response.json());
+}
+
 
 
 
@@ -162,6 +175,7 @@ const API = {
   getGames,
   getLatestDrawnNumbers,
   getLeaderboard,
+  getTotalScore,
 };
 
 export default API;
