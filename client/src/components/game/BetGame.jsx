@@ -1,7 +1,6 @@
 import { Button } from "react-bootstrap";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import API from "../../api/API.mjs";
 import DrawnNumbers from "../DrawnNumber";
 import LoggedInContext from "../contexts/LoggedInContext";
@@ -91,7 +90,6 @@ const BetGame = ({ setPoints, navigate }) => {
             <div>
                 Your points: {points ? points : "loading..."}
             </div>
-            <Button onClick={() => navigate("/ranking")}>Ranking</Button>
         </div>
     );
 }

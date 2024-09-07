@@ -34,13 +34,27 @@ const CustomNavbar = ({ handleLogout, handleLogin, fetchUserInfo }) => {
             </Navbar.Brand>
           </Link>
           {isLoggedIn ? (
-            <div className="mt-3">
-              <ButtonToolbar>
-                <ButtonGroup aria-label="Logout button">
-                  <LogoutButton handleLogout={handleLogout} />
-                </ButtonGroup>
-              </ButtonToolbar>
-            </div>
+            <>
+              <div className="mt-2">
+                <Button>
+                  <Link to="/play" style={{ color: "white" }}>
+                    Play
+                  </Link>
+                </Button>
+                <Button>
+                  <Link to="/ranking" style={{ color: "white" }}>
+                    Ranking
+                  </Link>
+                </Button>
+              </div>
+              <div className="mt-3">
+                <ButtonToolbar>
+                  <ButtonGroup aria-label="Logout button">
+                    <LogoutButton handleLogout={handleLogout} />
+                  </ButtonGroup>
+                </ButtonToolbar>
+              </div>
+            </>
           ) : (
             <div className="mt-3">
               {/* <LoginForm handleLogin={handleLogin} /> */}
