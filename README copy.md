@@ -65,7 +65,7 @@
 
 ### Short overview
 
-- Table `user` - contains information about the users and their budget
+- Table `user` - contains information about the users,such as email, pw and salt, and the budget/points
 - Table `game` - contains information when and which number has been drawns
 - Table `user_game` - contains information about the bet placed by users
 

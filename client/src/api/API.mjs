@@ -82,41 +82,7 @@ async function placeBet(numbers) {
 }
 
 
-async function recordGame(rounds) {
-  const response = await fetch(`${SERVER_URL}/games`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify({ rounds }),
-  });
 
-  if (response.ok) return response.json();
-
-  handleErrors(await response.json());
-}
-
-async function getGames({ limit, offset }) {
-  const response = await fetch(
-    `${SERVER_URL}/games?${new URLSearchParams({
-      limit,
-      offset,
-    })}`,
-    {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-      credentials: "include",
-    },
-  );
-
-  if (response.ok) return response.json();
-
-  handleErrors(await response.json());
-}
 
 async function getLatestDrawnNumbers() {
   const response = await fetch(`${SERVER_URL}/games/latest`, {
@@ -172,9 +138,7 @@ const API = {
   login,
   logout,
   getUserInfo,
-  recordGame,
   placeBet,
-  getGames,
   getLatestDrawnNumbers,
   getLeaderboard,
   getTotalScore,

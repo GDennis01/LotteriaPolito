@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
 import API from "../../api/API.mjs";
-import DrawnNumbers from "../DrawnNumber";
+import DrawnNumbers from "./DrawnNumber";
 import LoggedInContext from "../contexts/LoggedInContext";
 import PointsContext from "../contexts/PointsContext";
 const BetGame = ({ setPoints, navigate }) => {

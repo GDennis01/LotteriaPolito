@@ -10,8 +10,8 @@ import ErrorPage from "./components/errors/Error404Page";
 import ErrorBoundary from "./components/errors/ErrorBoundary";
 import ProtectedRoute from "./components/errors/ProtectedRoute";
 import LoginForm from "./components/auth/LoginForm.jsx";
-import Rules from "./components/Rules.jsx";
-import Ranking from "./components/Ranking.jsx";
+import Rules from "./components/game/Rules.jsx";
+import Ranking from "./components/game/Ranking.jsx";
 import BetGame from "./components/game/BetGame.jsx";
 import PointsContext from "./components/contexts/PointsContext.jsx";
 
@@ -103,20 +103,34 @@ const App = () => {
           />
           <PointsContext.Provider value={points}>
             <Routes>
-              <Route index element={<LoginForm handleLogin={handleLogin} navigate={navigate} />}></Route>
-              <Route path="ranking" element={<ProtectedRoute>
-                <Ranking navigate={navigate} />
-              </ProtectedRoute>}></Route>
+              <Route index element={
+                <>
+                  <LoginForm handleLogin={handleLogin} navigate={navigate} />
+                  <Rules />
+                </>
+              }></Route>
+              <Route path="ranking" element={
+                <>
+                  <ProtectedRoute>
+                    <Ranking navigate={navigate} />
+                  </ProtectedRoute>
+                  <Rules />
+                </>
+              }></Route>
               <Route
                 path="play"
-                element={<ProtectedRoute>
-                  <BetGame fetchUserInfo={fetchUserInfo} setPoints={setPoints} navigate={navigate} />
-                </ProtectedRoute>
+                element={
+                  <>
+                    <ProtectedRoute>
+                      <BetGame fetchUserInfo={fetchUserInfo} setPoints={setPoints} navigate={navigate} />
+                    </ProtectedRoute>
+                    <Rules />
+                  </>
                 }
               ></Route>
               <Route path="*" element={<ErrorPage />}></Route>
             </Routes>
-            <Rules />
+
           </PointsContext.Provider>
         </LoggedInContext.Provider>
       </MessageContext.Provider>
