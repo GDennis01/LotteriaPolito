@@ -60,7 +60,7 @@ class AuthRoutes {
     /**
      * Fetches the total score of the user
      * @route GET /api/sessions/current/score
-     * @returns {Object} 200 - User object with total score
+     * @returns {Object} 200 - Total score of the user
      */
     this.router.get(
       "/current/score",

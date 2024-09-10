@@ -27,31 +27,6 @@ class GameRoutes {
    */
   initRoutes() {
     /**
-     * Fetches all games for a user, ordered by date ascending
-     * @route GET /api/games?limit={limit}&offset={offset}
-     * @returns {Array.<Object>} 200 - Array of games
-     */
-    this.router.get(
-      "/",
-      this.authenticator.isLoggedIn,
-      query("limit").optional({ values: "falsy" }).isInt(),
-      query("offset").optional({ values: "null" }).isInt({ min: 0 }),
-      this.errorHandler.validate,
-      (req, res, next) => {
-        try {
-          const games = GameDao.getGames(
-            req.user.id,
-            req.query.limit || null,
-            req.query.offset || null,
-          );
-          res.json(games);
-        } catch (err) {
-          next(err);
-        }
-      },
-    );
-
-    /**
      * Records a new bet or updates the existing one
      * @route POST /api/games
      * @body {numbers} - Array of numbers
