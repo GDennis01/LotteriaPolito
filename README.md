@@ -1,50 +1,33 @@
-# Exam #1: "Meme Game"
+# Exam #3: "Lottery Game"
 
-## Student: s332100 OCCHIPINTI EDUARD ANTONOVIC
+## Student: s330438 Gobbi Dennis
 
-- [Exam #1: "Meme Game"](#exam-1-meme-game)
-	- [Student: s332100 OCCHIPINTI EDUARD ANTONOVIC](#student-s332100-occhipinti-eduard-antonovic)
+- [Exam #3: "Lottery Game"](#exam-3-lottery-game)
+	- [Student: s330438 Gobbi Dennis](#student-s330438-gobbi-dennis)
 	- [React Client Application Routes](#react-client-application-routes)
 	- [Main React Components](#main-react-components)
 	- [API Server](#api-server)
 	- [Database Tables](#database-tables)
 		- [Short overview](#short-overview)
-		- [Tables (7)](#tables-7)
-			- [CorrectCaption](#correctcaption)
-			- [Caption](#caption)
-			- [Round](#round)
-			- [Meme](#meme)
-			- [Game](#game)
-			- [User](#user)
-		- [Triggers (2)](#triggers-2)
-			- [Round.AfterInsert](#roundafterinsert)
-			- [Game.BeforeDelete](#gamebeforedelete)
+		- [Tables](#tables)
+			- [user](#user)
+			- [game](#game)
+			- [user\_game](#user_game)
 	- [Screenshots](#screenshots)
-		- [Home page](#home-page)
-		- [Correct guess](#correct-guess)
-		- [Wrong guess](#wrong-guess)
-		- [End game screen](#end-game-screen)
-		- [Profile page](#profile-page)
-		- [Past games recap](#past-games-recap)
+- [TODO!](#todo)
 	- [Users Credentials](#users-credentials)
 
 ## React Client Application Routes
 
-- Route `/`: home page, also contains the play button to start the new game
+- Route `/`: home page that contains a log-in form and the rules
 - Route `/play`: page where the game is played
-- Route `/profile`: page showing the history of the games played by the user
-- Route `/*`: sends to 404 page
+- Route `/ranking`: page showing the ranking of the top three players with most budget/points.
+- Route `/*`: sends to 404/"Page not found" page.
 
 ## Main React Components
-
-- [`Profile`](client/src/components/user/Profile.jsx): component used to render the profile of the user, consisting of the game history and the total score
-  - [`GameHistory`](client/src/components/user/GameHistory.jsx): component used to display the history of the games, the history is loaded in fixed-size batches to avoid potentially sending huge amounts of data at once
-- [`Game`](client/src/components/game/Game.jsx): component used to render the game, consisting of the meme, the correct caption and the incorrect captions
-  - [`Round`](client/src/components/game/Round.jsx): where all the game logic takes place.
-  - [`Timer`](client/src/components/game/Timer.jsx): component used to render the timer of the game
-- [`CustomNavbar`](client/src/components/CustomNavbar.jsx): component used to render the navigation bar which includes the login/logout button, the profile button (if logged in) and the home button
-- [`MemeCards`](client/src/components/MemeCards.jsx): component used to render a meme with an associated caption and give it an appropriate background based on the correctness of the caption, is reused both to show the end game screen and to show the history
-- [`App`](client/src/App.jsx): main component of the application, contains the routing logic and the state of the user
+- [`BetGame`](client/src/components/game/BetGame.jsx): component used to render the game, consisting in a clickable matrix that let's you place or update a bet
+- [`CustomNavbar`](client/src/components/CustomNavbar.jsx): component used to render the navigation bar which includes the login/logout button and the home button(which redirects to `/play` if logged-in ).
+- [`App`](client/src/App.jsx): main component of the application, contains the routing logic and the game component among many other sub-components(such as DrawnNumbers.jsx and Ranking.jsx)
 
 ## API Server
 
@@ -59,203 +42,91 @@
   - response body content: `{ id: number, name: string, surname: string, email: string, totalScore: number }`
   - response status code: 200
   - possible errors: 401 (Unauthorized), 500 (Internal Server Error)
-- GET `/api/games?limit=&offset=`: get the list of games
-  - request query parameters: `limit` (number of games to retrieve), `offset` (number of games to skip)
+- GET `/api/sessions/current/score`: get current user score
+  - response body content: `points:number`
   - response status code: 200
-  - possible errors: 500 (Internal Server Error)
-- POST `/api/games`: create a new game
-  - request body content: `{ rounds: [ { idMeme: number, idCaption?: number, score: number } ] }`
+  - possible errors: 401 (Unauthorized), 500 (Internal Server Error)
+  
+- POST `/api/games`: creates or update an already existing bet
+  - request body content: `numbers:[number]`
   - response status code: 201
-  - possible errors: 500 (Internal Server Error), 422 (Unprocessable Entity)
-- GET `/api/memes/random`: get a random meme
-  - response body content: `{ id: number, tag: string }`
+  - possible errors: 401 (Unauthorized), 500 (Internal Server Error)
+- GET `/api/games/latest`: get the latest drawn numbers(that have yet to be shown)
+  - response body content: `points:[number]`
   - response status code: 200
-  - possible errors: 500 (Internal Server Error)
-- GET `/api/captions/random?idMeme=`: get a random set of captions for a given meme
-  - request query parameters: `idMeme` (meme id)
-  - response body content: `[{ id: number, caption: string }]`
+  - possible errors: 401 (Unauthorized), 500 (Internal Server Error)
+- GET `/api/games/leaderboard`: get the top three players with most budget
+  - response body content: `[{name:String,points:number}]`
   - response status code: 200
-  - possible errors: 500 (Internal Server Error)
-- GET `/api/captions/:id/:idMeme`: responds whether the caption is correct
-  - request parameters: `idMeme` (meme id), `id` (caption id)
-  - response body content: `true | false`
-  - response status code: 200
-  - possible errors: 500 (Internal Server Error)
+  - possible errors: 401 (Unauthorized), 500 (Internal Server Error)
+
 
 ## Database Tables
 
 ### Short overview
 
-- Table `User` - contains information about the users and their total score over all games
-- Table `Game` - contains information about the games played by the users
-- Table `Round` - contains information about the rounds associated with each game
-- Table `Meme` - contains the tag of the memes
-- Table `Caption` - contains the captions of the memes
-- Table `CorrectCaption` - contains the association between the memes and the correct captions
+- Table `user` - contains information about the users,such as email, pw and salt, and the budget/points
+- Table `game` - contains information when and which number has been drawns
+- Table `user_game` - contains information about the bet placed by users
 
-### Tables (7)
 
-#### CorrectCaption
+### Tables
+
+#### user
 
 ```sql
-CREATE TABLE IF NOT EXISTS "CorrectCaption" (
-	"id" INTEGER NOT NULL,
-	"idCaption" INTEGER NOT NULL,
-	"idMeme" INTEGER NOT NULL,
-	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("idMeme") REFERENCES "Meme"("id"),
-	FOREIGN KEY("idCaption") REFERENCES "Caption"("id")
-);
-```
-
-#### Caption
-
-```sql
-CREATE TABLE IF NOT EXISTS "Caption" (
-	"id" INTEGER NOT NULL,
-	"caption" TEXT NOT NULL UNIQUE,
+CREATE TABLE "user" (
+	"email"	TEXT NOT NULL UNIQUE,
+	"pw"	TEXT NOT NULL UNIQUE,
+	"salt"	TEXT NOT NULL,
+	"points"	INTEGER NOT NULL DEFAULT 100,
+	"id"	INTEGER NOT NULL DEFAULT 0,
+	"name"	TEXT NOT NULL DEFAULT 'A',
 	PRIMARY KEY("id" AUTOINCREMENT)
-);
+)
 ```
 
-#### Round
+#### game
 
 ```sql
-CREATE TABLE IF NOT EXISTS "Round" (
-	"id" INTEGER NOT NULL,
-	"idGame" INTEGER NOT NULL,
-	"idMeme" INTEGER,
-	"idCaption" INTEGER,
-	"score" INTEGER NOT NULL DEFAULT 0,
-	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("idMeme") REFERENCES "Meme"("id") ON DELETE
-	SET
-		NULL,
-		FOREIGN KEY("idCaption") REFERENCES "Caption"("id") ON DELETE
-	SET
-		NULL,
-		FOREIGN KEY("idGame") REFERENCES "Game"("id") ON DELETE CASCADE
-);
+CREATE TABLE "game" (
+	"timestamp"	TEXT NOT NULL UNIQUE,
+	"number1"	INTEGER NOT NULL,
+	"number2"	INTEGER NOT NULL,
+	"number3"	INTEGER NOT NULL,
+	"number4"	INTEGER NOT NULL,
+	"number5"	INTEGER NOT NULL,
+	"completed"	INTEGER NOT NULL DEFAULT 0,
+	PRIMARY KEY("timestamp")
+)
 ```
 
-#### Meme
+#### user_game
 
 ```sql
-CREATE TABLE IF NOT EXISTS "Meme" (
-	"id" INTEGER NOT NULL,
-	"tag" TEXT NOT NULL,
-	PRIMARY KEY("id" AUTOINCREMENT)
-);
-```
-
-#### Game
-
-```sql
-CREATE TABLE IF NOT EXISTS "Game" (
-	"id" INTEGER NOT NULL,
-	"idUser" INTEGER NOT NULL,
-	"date" TEXT NOT NULL,
-	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("idUser") REFERENCES "User"("id") ON DELETE CASCADE
-);
-```
-
-#### User
-
-```sql
--- Business rule: id=0 is not valid, (I want to avoid the check at every insert)
-CREATE TABLE IF NOT EXISTS "User" (
-	"id" INTEGER NOT NULL,
-	"email" TEXT NOT NULL UNIQUE,
-	"name" TEXT NOT NULL,
-	"surname" TEXT NOT NULL,
-	"hash" TEXT NOT NULL,
-	"salt" TEXT NOT NULL,
-	"totalScore" INTEGER DEFAULT 0,
-	PRIMARY KEY("id" AUTOINCREMENT)
-);
-```
-
-### Triggers (2)
-
-#### Round.AfterInsert
-
-```sql
-CREATE TRIGGER AfterInsert
-AFTER
-INSERT
-	ON Round BEGIN
-UPDATE
-	User
-SET
-	totalScore = totalScore + NEW.score
-WHERE
-	User.id = (
-		SELECT
-			idUser
-		FROM
-			Game
-		WHERE
-			id = NEW.idGame
-	);
-
-END;
-```
-
-#### Game.BeforeDelete
-
-```sql
-CREATE TRIGGER BeforeDelete BEFORE DELETE ON Game BEGIN
-UPDATE
-	User
-SET
-	totalScore = totalScore - (
-		SELECT
-			SUM(score)
-		FROM
-			Round
-		WHERE
-			idGame = OLD.id
-	)
-WHERE
-	User.id = OLD.idUser;
-
-END;
+CREATE TABLE "user_game" (
+	"timestamp"	TEXT,
+	"id"	INTEGER,
+	"number1"	INTEGER,
+	"number2"	INTEGER,
+	"number3"	INTEGER,
+	"win"	INTEGER,
+	PRIMARY KEY("timestamp","id"),
+	CONSTRAINT "fkUser" FOREIGN KEY("id") REFERENCES "user"("id"),
+	CONSTRAINT "fkGame" FOREIGN KEY("timestamp") REFERENCES "game"("timestamp")
+)
 ```
 
 ## Screenshots
+# TODO!
+<!-- > The site has been designed to be friendly to screen color inverters (i.e. extensions like Dark Reader) so the screenshots show how the website looks both in light mode and dark mode through the extension. -->
 
-> The site has been designed to be friendly to screen color inverters (i.e. extensions like Dark Reader) so the screenshots show how the website looks both in light mode and dark mode through the extension.
-
-### Home page
-
-![home page](imgs/home-page.png)
-
-### Correct guess
-
-![correct guess](imgs/correct-guess.gif)
-
-### Wrong guess
-
-![wrong guess](imgs/wrong-guess.gif)
-
-### End game screen
-
-![end game screen](imgs/end-game-screen.png)
-
-### Profile page
-
-![profile page with history](imgs/profile-page-history.png)
-
-### Past games recap
-
-![past games recap](imgs/past-games-recap.gif)
 
 ## Users Credentials
 
-> The first user has some games played while the second user has no games played.
 
-| **Email**                            | **Password** |
-| ------------------------------------ | ------------ |
-| eduard.occhipinti@studenti.polito.it | funghi       |
-| miriam.lamari@studenti.polito.it     | gelato       |
+| **Email**                  | **Password**  |
+| -------------------------- | ------------- |
+| s330438@studenti.polito.it | gobbi         |
+| gambling@addicted.it       | casino        |
+| politogaming@lottery.it    | politolottery |
